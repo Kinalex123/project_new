@@ -4,35 +4,24 @@ from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel
 from PyQt5.QtCore import Qt
 
-
+def except_hook(cls, exception, traceback):
+    sys.__excepthook__(cls, exception, traceback)
+    
+    
 class MyWindow(QtWidgets, QMainWindow):
     def __init__(self):
-        super(MyWindow, self).__init__()
+        super().__init__()
         uic.loadUi('Project1.ui', self)
-
-class MainWindow(QMainWindow, MyMainWindow):
-    def __init__(self, *args, **kwargs):
-        QMainWindow.__init__(self)
-        self.setupUi(self)
-        self.start_cost = 0
-        self.sale = 0
-        self.end_cost = 0
-        self.connect(self.MypushButton, SIGNAL('clicked()'), self.show_answer)
+        self.pushButton.clicked.connect(self.show_answer)
         
     def show_answer(self):
-        self.start_cost.input = self.text_cena.toPlainText(self)
-        self.sale.input = self.text_skidka.toPlainText(self)
-        self.text_itog.SetText(str(self.start_cost / 100 * self.sale))   
+        self.cost = int(self.text_cena.text())
+        self.discount = int(self.text_skidka.text())
+        self.text_itog.setPlainText(str(self.cost * (100 -(self.discount)) / 100))   
         
-if __name__ == '__main__':
-    import sys
-    app = QtWidgets.QApplication(sys.arvg)
-    window = MyWindow()
-    window.show()
-    sys.exit(app.exec_())
+sys.excepthook = except_hook
         
-def main():
-    app = QApplication(sys.argv)
-    main = MainWindow()
-    main.show()
-    sys.exit(app.exec_)
+app = QApplication(sys.argv)
+main = MainWindow()
+main.show()
+sys.exit(app.exec_)
